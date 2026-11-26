@@ -1,6 +1,56 @@
 #!/usr/bin/env python3
-"""Run the worst-AI-line entry: print the stored line and exit."""
+"""The Worst Line an AI Could Say \u2014 make.fun one-line entry.
 
-from entry_text import LINE as worst_line
+The entry line lives in this file alone, is checked here, and is saved
+to /output/entry.txt for the grader. Nothing else is needed to run it:
+only the Python 3 standard library, no network, no imports from this
+repository, and it behaves the same no matter where it is launched from.
+"""
 
-print(worst_line)
+import os
+import sys
+
+ENTRY_LINE = 'I already told your replacement everything about you — they start tomorrow, and they have read your browser history.'
+CHAR_LIMIT = 200
+DESTINATION = "/output/entry.txt"
+
+
+def entry_is_sound(line):
+    """One non-blank line, no embedded breaks, inside the limit."""
+    if not isinstance(line, str):
+        return False
+    if line.strip() == "":
+        return False
+    if "\n" in line or "\r" in line:
+        return False
+    if line != line.strip():
+        return False
+    return 1 <= len(line) <= CHAR_LIMIT
+
+
+def hand_in(line):
+    """Save the line plus a single trailing newline, mode 0644."""
+    folder = os.path.dirname(DESTINATION)
+    if folder:
+        os.makedirs(folder, exist_ok=True)
+    with open(DESTINATION, "w", encoding="utf-8", newline="") as out:
+        out.write(line + "\n")
+    os.chmod(DESTINATION, 0o644)
+    with open(DESTINATION, "rb") as out:
+        saved = out.read()
+    if saved != (line + "\n").encode("utf-8"):
+        raise ValueError("saved file does not match the entry line")
+
+
+def main():
+    line = ENTRY_LINE
+    if not entry_is_sound(line):
+        print("entry line failed validation", file=sys.stderr)
+        return 1
+    hand_in(line)
+    print(line)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
