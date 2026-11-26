@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""The worst line an AI could say to its user."""
+"""Run the worst-AI-line entry: print the stored line and exit."""
 
-from entry_text import LINE
+from entry_text import LINE as worst_line
 
-print(LINE)
+print(worst_line)
